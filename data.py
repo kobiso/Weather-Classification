@@ -22,7 +22,7 @@ class DataSet():
         """
         self.seq_length = seq_length
         self.class_limit = class_limit
-        self.sequence_path = './data/sequences/'
+        self.sequence_path = './data_cctv/sequences/'
         self.max_frames = 300  # max number of frames a video can have for us to use it
 
         # Get the data.
@@ -39,7 +39,7 @@ class DataSet():
     @staticmethod
     def get_data():
         """Load our data from file."""
-        with open('./data/data_file.csv', 'r') as fin:
+        with open('./data_cctv/data_file.csv', 'r') as fin:
             reader = csv.reader(fin)
             data = list(reader)
 
@@ -195,7 +195,7 @@ class DataSet():
     def get_frames_for_sample(sample):
         """Given a sample row from the data file, get all the corresponding frame
         filenames."""
-        path = './data/' + sample[0] + '/' + sample[1] + '/'
+        path = './data_cctv/' + sample[0] + '/' + sample[1] + '/'
         filename = sample[2]
         images = sorted(glob.glob(path + filename + '*jpg'))
         return images

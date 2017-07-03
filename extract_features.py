@@ -18,7 +18,7 @@ from extractor import Extractor
 from tqdm import tqdm
 
 # Set defaults.
-seq_length = 40
+seq_length = 90 #40
 class_limit = None  # Number of classes to extract. Can be 1-101 or None for all.
 
 # Get the dataset.
@@ -32,7 +32,7 @@ pbar = tqdm(total=len(data.data))
 for video in data.data:
 
     # Get the path to the sequence for this video.
-    path = './data/sequences/' + video[2] + '-' + str(seq_length) + \
+    path = './data_cctv/sequences/' + video[2] + '-' + str(seq_length) + \
         '-features.txt'
 
     # Check if we already have it.
