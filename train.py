@@ -15,20 +15,20 @@ def train(data_type, seq_length, model, saved_model=None,
 
     # Helper: Save the model.
     checkpointer = ModelCheckpoint(
-        filepath='./data_cctv/checkpoints/' + model + '-' + data_type + \
+        filepath='/hdd/hpc/Projects/Weather/data/checkpoints/' + model + '-' + data_type + \
             '.{epoch:03d}-{val_loss:.3f}.hdf5',
         verbose=1,
         save_best_only=True)
 
     # Helper: TensorBoard
-    tb = TensorBoard(log_dir='./data_cctv/logs')
+    tb = TensorBoard(log_dir='/hdd/hpc/Projects/Weather/data/logs')
 
     # Helper: Stop when we stop learning.
     early_stopper = EarlyStopping(patience=10)
 
     # Helper: Save results.
     timestamp = time.time()
-    csv_logger = CSVLogger('./data_cctv/logs/' + model + '-' + 'training-' + \
+    csv_logger = CSVLogger('/hdd/hpc/Projects/Weather/data/logs/' + model + '-' + 'training-' + \
         str(timestamp) + '.log')
 
     # Get the data and process it.
@@ -90,7 +90,7 @@ def main():
     model = 'lstm'  # see `models.py` for more
     saved_model = None  # None or weights file
     class_limit = None  # int, can be 1-101 or None
-    seq_length = 90 #40
+    seq_length = 90
     load_to_memory = True  # pre-load the sequences into memory
 
     # Chose images or features and image shape based on network.
