@@ -32,7 +32,7 @@ pbar = tqdm(total=len(data.data))
 for video in data.data:
 
     # Get the path to the sequence for this video.
-    path = '/hdd/hpc/Projects/Weather/data/sequences/' + video[2] + '-' + str(seq_length) + \
+    path = '/hdd/hpc/Projects/Weather/data_midterm/sequences/' + video[2] + '-' + str(seq_length) + \
         '-features.txt'
 
     # Check if we already have it.
