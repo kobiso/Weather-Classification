@@ -23,7 +23,7 @@ class DataSet():
         self.seq_length = seq_length
         self.class_limit = class_limit
         # self.sequence_path = './data_cctv/sequences/'
-        self.sequence_path = '/hdd/hpc/Projects/Weather/data_midterm/sequences/'
+        self.sequence_path = '/hdd/hpc/Projects/Weather/data_WJL/data/sequences/'
         self.max_frames = 300  # max number of frames a video can have for us to use it
 
         # Get the data.
@@ -40,7 +40,7 @@ class DataSet():
     @staticmethod
     def get_data():
         """Load our data from file."""
-        with open('/hdd/hpc/Projects/Weather/data_midterm/data_file.csv', 'r') as fin:
+        with open('/hdd/hpc/Projects/Weather/data_WJL/data/data_file.csv', 'r') as fin:
             reader = csv.reader(fin)
             data = list(reader)
 
@@ -90,21 +90,75 @@ class DataSet():
         """Split the data into train and test groups."""
         train = []
         test = []
+        validation = []
         for item in self.data:
             if item[0] == 'train':
                 train.append(item)
+            elif item[0] == 'validation':
+                validation.append(item)
             else:
                 test.append(item)
-        return train, test
+        return train, test, validation
 
+    def get_all_sequences_in_memory(self, train_test, data_type, concat=False):
+        """
+        This is a mirror of our generator, but attempts to load everything into
+        memory so we can train way faster.
+        """
+        # Get the right dataset.
+        train, test, validation = self.split_train_test()
+        if train_test == 'train':
+            data = train
+        elif train_test == 'test':
+            data = test
+        else:
+            data = validation
+        # data = train if train_test == 'train' else test
+
+        print("Loading %d samples into memory for %sing." % (len(data), train_test))
+
+        X, y = [], []
+        for row in data:
+
+            if data_type == 'images':
+                frames = self.get_frames_for_sample(row)
+                frames = self.rescale_list(frames, self.seq_length)
+
+                # Build the image sequence
+                sequence = self.build_image_sequence(frames)
+
+            else:
+                sequence = self.get_extracted_sequence(data_type, row)
+
+                if sequence is None:
+                    print("Can't find sequence. Did you generate them?")
+                    raise
+
+                if concat:
+                    # We want to pass the sequence back as a single array. This
+                    # is used to pass into a CNN or MLP, rather than an RNN.
+                    sequence = np.concatenate(sequence).ravel()
+
+            X.append(sequence)
+            y.append(self.get_class_one_hot(row[1]))
+
+        return np.array(X), np.array(y)
+
+    '''
     def get_all_sequences_in_memory(self, batch_Size, train_test, data_type, concat=False):
         """
         This is a mirror of our generator, but attempts to load everything into
         memory so we can train way faster.
         """
         # Get the right dataset.
-        train, test = self.split_train_test()
-        data = train if train_test == 'train' else test
+        train, test, validation = self.split_train_test()
+        # data = train if train_test == 'train' else test
+        if train_test == 'train':
+            data = train
+        elif train_test == 'test':
+            data = test
+        else:
+            data = validation
 
         print("Getting %s data with %d samples." % (train_test, len(data)))
 
@@ -126,6 +180,7 @@ class DataSet():
             y.append(self.get_class_one_hot(row[1]))
 
         return np.array(X), np.array(y)
+    '''
 
     def frame_generator(self, batch_size, train_test, data_type, concat=False):
         """Return a generator that we can use to train on. There are
@@ -134,8 +189,14 @@ class DataSet():
         data_type: 'features', 'images'
         """
         # Get the right dataset for the generator.
-        train, test = self.split_train_test()
-        data = train if train_test == 'train' else test
+        train, test, validation = self.split_train_test()
+        # data = train if train_test == 'train' else test
+        if train_test == 'train':
+            data = train
+        elif train_test == 'test':
+            data = test
+        else:
+            data = validation
 
         print("Creating %s generator with %d samples." % (train_test, len(data)))
 
@@ -196,7 +257,7 @@ class DataSet():
     def get_frames_for_sample(sample):
         """Given a sample row from the data file, get all the corresponding frame
         filenames."""
-        path = '/hdd/hpc/Projects/Weather/data_midterm/' + sample[0] + '/' + sample[1] + '/'
+        path = '/hdd/hpc/Projects/Weather/data_WJL/data/' + sample[0] + '/' + sample[1] + '/'
         filename = sample[2]
         images = sorted(glob.glob(path + filename + '*jpg'))
         return images
