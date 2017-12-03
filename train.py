@@ -15,20 +15,20 @@ def train(data_type, seq_length, model, saved_model=None,
 
     # Helper: Save the model.
     checkpointer = ModelCheckpoint(
-        filepath='/hdd/hpc/Projects/Weather/data_WJL/data/checkpoints/' + model + '-' + data_type + \
+        filepath='/hdd/hpc/Projects/Weather/121201_Vi/data/checkpoints/' + model + '-' + data_type + \
             '.{epoch:03d}-{val_loss:.3f}.hdf5',
         verbose=1,
         save_best_only=True)
 
     # Helper: TensorBoard
-    tb = TensorBoard(log_dir='/hdd/hpc/Projects/Weather/data_WJL/data/logs')
+    tb = TensorBoard(log_dir='/hdd/hpc/Projects/Weather/121201_Vi/data/logs')
 
     # Helper: Stop when we stop learning.
     early_stopper = EarlyStopping(patience=10)
 
     # Helper: Save results.
     timestamp = time.time()
-    csv_logger = CSVLogger('/hdd/hpc/Projects/Weather/data_WJL/data/logs/' + model + '-' + 'training-' + \
+    csv_logger = CSVLogger('/hdd/hpc/Projects/Weather/121201_Vi/data/logs/' + model + '-' + 'training-' + \
         str(timestamp) + '.log')
 
     # Get the data and process it.
