@@ -122,11 +122,14 @@ def main():
     load_to_memory = True  # pre-load the sequences into memory
 
     # Chose images or features and image shape based on network.
-    if model == 'conv_3d' or model == 'crnn' or model == 'c3d':
+    if model == 'conv_3d' or model == 'c3d':
         data_type = 'images'
         #image_shape = (80, 80, 3)
+        image_shape = (112, 63, 3) # Work for 3dcnn with batch size 5
+        load_to_memory = False
+    elif model == 'crnn':
+        data_type = 'images'
         image_shape = (144, 81, 3) # Work for crnn with batch size 8
-        #image_shape = (112, 63, 3) # Work for 3dcnn with batch size 5
         load_to_memory = False
     elif model == 'lrcn':
         data_type = 'images'

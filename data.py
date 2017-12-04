@@ -23,7 +23,7 @@ class DataSet():
         self.seq_length = seq_length
         self.class_limit = class_limit
         # self.sequence_path = './data_cctv/sequences/'
-        self.sequence_path = '/hdd/hpc/Projects/Weather/data_WJL/data/sequences/'
+        self.sequence_path = '/hdd/hpc/Projects/Weather/121201_Vi/data/sequences/'
         self.max_frames = 300  # max number of frames a video can have for us to use it
 
         # Get the data.
@@ -40,7 +40,7 @@ class DataSet():
     @staticmethod
     def get_data():
         """Load our data from file."""
-        with open('/hdd/hpc/Projects/Weather/data_WJL/data/data_file.csv', 'r') as fin:
+        with open('/hdd/hpc/Projects/Weather/121201_Vi/data/data_file.csv', 'r') as fin:
             reader = csv.reader(fin)
             data = list(reader)
 
@@ -209,7 +209,8 @@ class DataSet():
                 sequence = None
 
                 # Get a random sample.
-                sample = random.choice(data)
+                #sample = data # for confusion matrix
+                sample = random.choice(data) # for training
 
                 # Check to see if we've already saved this sequence.
                 if data_type is "images":
@@ -257,7 +258,7 @@ class DataSet():
     def get_frames_for_sample(sample):
         """Given a sample row from the data file, get all the corresponding frame
         filenames."""
-        path = '/hdd/hpc/Projects/Weather/data_WJL/data/' + sample[0] + '/' + sample[1] + '/'
+        path = '/hdd/hpc/Projects/Weather/121201_Vi/data/' + sample[0] + '/' + sample[1] + '/'
         filename = sample[2]
         images = sorted(glob.glob(path + filename + '*jpg'))
         return images
