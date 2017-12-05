@@ -11,7 +11,13 @@ def train(data_type, seq_length, model, saved_model=None,
           load_to_memory=False):
     # Set variables.
     nb_epoch = 1000
-    batch_size = 8 #32 for LSTM; 16 for CRNN; 8 for CNN-3d
+    # 32 for LSTM; 8 for CRNN; 5 for CNN-3d
+    if model == 'conv_3d' or model == 'c3d':
+        batch_size = 5
+    elif model == 'crnn' or model == 'lrcn':
+        batch_size = 8
+    else:
+        batch_size = 32
 
     # Helper: Save the model.
     checkpointer = ModelCheckpoint(
