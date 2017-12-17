@@ -25,7 +25,7 @@ def extract_files():
     `ffmpeg -i video.mpg image-%04d.jpg`
     """
     data_file = []
-    folders = ['./train/', './test/']
+    folders = ['./train/', './test/', './validation/']
 
     for folder in folders:
         class_folders = glob.glob(folder + '*')
@@ -47,7 +47,9 @@ def extract_files():
                         filename
                     dest = train_or_test + '/' + classname + '/' + \
                         filename_no_ext + '-%04d.jpg'
-                    call(["ffmpeg", "-i", src, dest])
+                    # lz:'-q:v'(qscale:v) is used to set quality of jpg, 1 is highest, 31 is lowest. we use '10'
+                    # '-q:v', '10' should be put before dest
+                    call(["ffmpeg", "-i", src, '-q:v', '5', dest])
 
                 # Now get how many frames it is.
                 nb_frames = get_nb_frames_for_video(video_parts)
